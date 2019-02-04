@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Pacifico');
+@import url('https://fonts.googleapis.com/css?family=Abel');
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    width: 100%;    
+    height: 100vh;
+    background-color: #fdfffc;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.roboto-font {
+    font-family: 'Roboto', sans-serif;
+}
+
+.abel-font {
+    font-family: 'Abel', sans-serif;
+}
+
+.txt-uppercase {
+    text-transform: uppercase;
+}
