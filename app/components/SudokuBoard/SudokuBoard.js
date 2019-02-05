@@ -19,6 +19,17 @@ const boardCol = {
     alignContent: 'center'        
 }
 
+const cell = {
+    padding: 0, 
+    margin: 0, 
+    justifyContent: 'center', 
+    alignContent: 'center', 
+    alignItems: 'center', 
+    display: 'flex', 
+    width: '100%', 
+    height: '100%'
+}
+
 class SudokuBoard extends Component {
   constructor(props) {
     super(props);    
@@ -84,27 +95,27 @@ class SudokuBoard extends Component {
                             this.state.cellValues.map((row, index) => {                                
                                 return(
                                     <Row key={index} style={{ width: '100%', height: 75 }}>
-                                    <Col xs={3} sm={3} md={3} lg={3} style={{ padding: 0, margin: 0, justifyContent: 'center', alignContent: 'center', alignItems: 'center', display: 'flex', width: '100%', height: '100%' }}>
-                                        <div className="sudoku-cell">
-                                            {row[0] === '.' ? '' : row[0]}
-                                        </div>
-                                    </Col>
-                                    <Col xs={3} sm={3} md={3} lg={3} style={{ padding: 0, margin: 0, justifyContent: 'center', alignContent: 'center', alignItems: 'center', display: 'flex', width: '100%', height: '100%' }}>
-                                        <div className="sudoku-cell">
-                                            {row[1] === '.' ? '' : row[1]}
-                                        </div>
-                                    </Col>
-                                    <Col xs={3} sm={3} md={3} lg={3} style={{ padding: 0, margin: 0, justifyContent: 'center', alignContent: 'center', alignItems: 'center', display: 'flex', width: '100%', height: '100%' }}>
-                                        <div className="sudoku-cell">
-                                            {row[2] === '.' ? '' : row[2]}
-                                        </div>
-                                    </Col>
-                                    <Col xs={3} sm={3} md={3} lg={3} style={{ padding: 0, margin: 0, justifyContent: 'center', alignContent: 'center', alignItems: 'center', display: 'flex', width: '100%', height: '100%' }}>
-                                        <div className="sudoku-cell">
-                                            {row[3] === '.' ? '' : row[3]}
-                                        </div>
-                                    </Col>
-                                </Row>
+                                        <Col xs={3} sm={3} md={3} lg={3} style={cell}>
+                                            <div className="sudoku-cell">
+                                                {row[0] === '.' ? '' : row[0]}
+                                            </div>
+                                        </Col>
+                                        <Col xs={3} sm={3} md={3} lg={3} style={cell}>
+                                            <div className="sudoku-cell">
+                                                {row[1] === '.' ? '' : row[1]}
+                                            </div>
+                                        </Col>
+                                        <Col xs={3} sm={3} md={3} lg={3} style={cell}>
+                                            <div className="sudoku-cell">
+                                                {row[2] === '.' ? '' : row[2]}
+                                            </div>
+                                        </Col>
+                                        <Col xs={3} sm={3} md={3} lg={3} style={cell}>
+                                            <div className="sudoku-cell">
+                                                {row[3] === '.' ? '' : row[3]}
+                                            </div>
+                                        </Col>
+                                    </Row>
                                 )
                             })
                         }                        
