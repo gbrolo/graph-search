@@ -1,5 +1,4 @@
 import Node from './Node';
-import State from './State';
 import { PriorityQueue } from 'js-priority-queue';
 
 function childNode(problem, parent, action) {
@@ -10,9 +9,15 @@ function childNode(problem, parent, action) {
     return node;
 }
 
+function solution(node) {
+    return node;
+}
+
 function aStar(problem) {
     let node = new Node(problem.getInitialState(), null, null, 0);
-    let frontier = new PriorityQueue({ comparator: function(a, b) { return b.getPathCost() < a.getPathCost() } });
+    let frontier = new PriorityQueue({ comparator: function(a, b) { return b.getPathCost() > a.getPathCost() } });
+    frontier.queue(node);
+    let unorderedFrontier = [node];
     let explored = [];
 
     while(true) {
@@ -22,7 +27,7 @@ function aStar(problem) {
             node = frontier.dequeue()
 
             if (problem.goalTest(node.getState())) {
-                return true; // SOLUTION(node);
+                return solution(node);
             } else {
                 explored.push(node.getState());
             }
@@ -30,10 +35,42 @@ function aStar(problem) {
             problem.actions(node.getState()).forEach(action => {
                 let child = childNode(problem, node, action);
 
-                // to be continued
+                if ((!isInside(child.getState(), explored)) || (!isInside(child.getState(), unorderedFrontier))) {
+                    frontier.queue(child);
+                    unorderedFrontier.push(child);
+                } else if (isInside(child.getState(), unorderedFrontier) && childHasHigherPathCost(child.getPathCost(), unorderedFrontier)) {
+                    // TODO
+                    let newUnorderedFrontier = unorderedFrontier.filter(n => n != node);
+                    newUnorderedFrontier.push(child);
+
+                    unorderedFrontier = newUnorderedFrontier;
+                    frontier.clear();
+
+                    for (var i = 0; i < newUnorderedFrontier.length; i++) {
+                        frontier.queue(newUnorderedFrontier[i]);
+                    }
+                }
             });
         }
     }
+}
+
+function isInside(object, array) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] === object) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function childHasHigherPathCost(childPathCost, unorderedFrontier) {
+    let max = Math.max.apply(Math, unorderedFrontier.map(node => {
+        return node.getPathCost()
+    }));
+
+    return max === childPathCost;
 }
 
 export { childNode, aStar }
