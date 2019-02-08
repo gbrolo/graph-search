@@ -88,7 +88,7 @@ class PuzzleBoard extends Component {
                     <Button className="txt-uppercase abel-font" outline onClick={() => this.parseString()}>Apply string</Button>
                 </Col>
                 <Col xs={12} sm={12} md={3} lg={3} style={colStyle}>
-                    <Button className="txt-uppercase abel-font" outline>Test string</Button>
+                    <Button className="txt-uppercase abel-font" outline>Solve</Button>
                 </Col>
             </Row>
             <Row style={{
