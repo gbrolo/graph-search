@@ -15,6 +15,10 @@ export default class HomePage extends React.PureComponent {
     }
   }
 
+  componentDidMount() {
+
+  }
+
   render() {
     return (
       <Fade in={true} timeout={600}>

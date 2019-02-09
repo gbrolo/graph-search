@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Fade, Row, Col, Input } from 'reactstrap';
 
+import { setInitialState } from '../../GraphSearch/SearchHelpers';
+import { cellValuesToPlainArray, setPuzzleGoalStates } from '../../GraphSearch/OperationHelpers';
+
 import './puzzle_board.css';
+import Problem from '../../GraphSearch/Problem';
 
 const colStyle = {
     display: 'flex',
@@ -35,7 +39,7 @@ class PuzzleBoard extends Component {
     super(props);    
 
     this.state = {
-        input: null,
+        input: 'F21C856B49A73ED.',
         cellValues: [
             ['15', '2', '1', '12'],
             ['8', '5', '6', '11'],
@@ -45,8 +49,16 @@ class PuzzleBoard extends Component {
     }
   }
 
+  solvePuzzle(cellValues) {      
+      let initialState = setInitialState(cellValuesToPlainArray(cellValues));
+      let problem = new Problem(initialState, setPuzzleGoalStates(), 'PUZZLE');      
+      console.log(problem.getInitialState().getState());
+      console.log(problem.actions(problem.getInitialState()));
+
+  }
+
   parseString() {
-      let array = this.state.input.split('');
+      let array = this.state.input.split('');      
       let cellValues = [];
 
       for (var i = 0; i < 4; i ++) {
@@ -62,7 +74,9 @@ class PuzzleBoard extends Component {
               row.push(value);
           }
           cellValues.push(row);
-      }      
+      }  
+      
+      this.solvePuzzle(cellValues);
 
       this.setState({ cellValues });
   }
@@ -82,6 +96,7 @@ class PuzzleBoard extends Component {
                         name="input" 
                         id="input" 
                         placeholder="Enter string to test"
+                        defaultValue="F21C856B49A73ED."
                         onChange={(event) => this.setState({ input: event.target.value })} />
                 </Col>
                 <Col xs={12} sm={12} md={3} lg={3} style={colStyle}>

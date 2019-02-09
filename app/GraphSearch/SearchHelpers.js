@@ -1,5 +1,8 @@
 import Node from './Node';
-import { PriorityQueue } from 'js-priority-queue';
+import State from './State';
+import PriorityQueue from 'js-priority-queue';
+
+const equal = require('deep-equal');
 
 function childNode(problem, parent, action) {
     let state = problem.result(parent.getState(), action);
@@ -15,7 +18,7 @@ function solution(node) {
 
 function aStar(problem) {
     let node = new Node(problem.getInitialState(), null, null, 0);
-    let frontier = new PriorityQueue({ comparator: function(a, b) { return b.getPathCost() > a.getPathCost() } });
+    let frontier = new PriorityQueue({ comparator: function(a, b) { return a.getPathCost() - b.getPathCost() } });
     frontier.queue(node);
     let unorderedFrontier = [node];
     let explored = [];
@@ -55,9 +58,9 @@ function aStar(problem) {
     }
 }
 
-function isInside(object, array) {
+function isInside(object, array) {          
     for (var i = 0; i < array.length; i++) {
-        if (array[i] === object) {
+        if (equal(array[i], object)) {
             return true;
         }
     }
@@ -73,4 +76,18 @@ function childHasHigherPathCost(childPathCost, unorderedFrontier) {
     return max === childPathCost;
 }
 
-export { childNode, aStar }
+function setInitialState(array) {    
+    let locations = {};
+
+    for (var i = 0; i < array.length; i++) {
+        let index = i + 1;
+
+        locations['tile_' + index] = array[i];
+    }
+
+    let initialState = new State(locations);
+
+    return initialState;
+}
+
+export { childNode, aStar, setInitialState, isInside }
