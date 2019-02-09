@@ -54,6 +54,7 @@ class PuzzleBoard extends Component {
       let problem = new Problem(initialState, setPuzzleGoalStates(), 'PUZZLE');      
       console.log(problem.getInitialState().getState());
       console.log(problem.actions(problem.getInitialState()));
+      console.log(problem.result(problem.getInitialState(), 'UP'));
 
   }
 
