@@ -15,6 +15,10 @@ export default class Problem {
         this.problemType = problemType;  
     }
 
+    getProblemType() {
+        return this.problemType;
+    }
+
     getInitialState() {
         return this.initialState;
     }
@@ -59,7 +63,11 @@ export default class Problem {
     }
 
     stepCost() {
-        return 1
+        if (this.problemType === 'PUZZLE') {
+            return 1
+        } else {
+            return null;
+        }
     }
 
     pathCost(path) {

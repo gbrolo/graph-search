@@ -6,7 +6,7 @@ const equal = require('deep-equal');
 
 function childNode(problem, parent, action) {
     let state = problem.result(parent.getState(), action);
-    let pathCost = parent.getPathCost() + problem.stepCost();
+    let pathCost = parent.getPathCost() + problem.stepCost() + getPuzzleHeuristic(parent.getState()); // TODO test h(n)
     let node = new Node(state, parent, action, pathCost);
 
     return node;
@@ -14,6 +14,23 @@ function childNode(problem, parent, action) {
 
 function solution(node) {
     return node;
+}
+
+// TODO: test
+function getPuzzleHeuristic(state) {
+    let locations = state.getState();
+    let misplaced = 0;
+
+    Object.keys(locations).forEach((key, i) => {
+        let index = parseInt(key.substr(5, key.length-1));
+        const value = parseInt(locations[index]);
+
+        if (value != index) {
+            misplaced = misplaced + 1;
+        }
+    })
+
+    return misplaced;
 }
 
 function aStar(problem) {
