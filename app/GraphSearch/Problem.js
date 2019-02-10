@@ -1,5 +1,5 @@
 import { isInside } from './SearchHelpers';
-import { getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction } from './OperationHelpers';
+import { getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction, clone } from './OperationHelpers';
 import State from './State';
 
 export default class Problem {
@@ -10,8 +10,8 @@ export default class Problem {
      * @param {String} problemType: either SUDOKU or PUZZLE      
      */
     constructor(initialState, goalStates, problemType) {
-        this.initialState = initialState; 
-        this.goalStates = goalStates;     
+        this.initialState = clone(initialState); 
+        this.goalStates = clone(goalStates);     
         this.problemType = problemType;  
     }
 
@@ -59,7 +59,10 @@ export default class Problem {
     }
 
     goalTest(s) {
-        return isInside(s, this.goalStates);
+        // console.log('entering goalTest function, comparing:');
+        // console.log('clone(s)', clone(s));
+        // console.log('this.goalStates', this.goalStates);
+        return isInside(clone(s).getState(), this.goalStates);
     }
 
     stepCost() {

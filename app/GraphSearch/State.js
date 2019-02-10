@@ -1,3 +1,5 @@
+import { clone } from './OperationHelpers';
+
 export default class State {
     /**
      * 
@@ -14,7 +16,7 @@ export default class State {
      * }
      */
     constructor(locations) {
-        this.locations = locations;
+        this.locations = clone(locations);
     }
 
     getState() {

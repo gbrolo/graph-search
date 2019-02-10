@@ -76,26 +76,37 @@ function setPuzzleGoalStates() {
         tile_16: "."
     };
 
-    let goalState2 = {
-        tile_1: ".",
-        tile_2: "1",
-        tile_3: "2",
-        tile_4: "3",
-        tile_5: "4",
-        tile_6: "5",
-        tile_7: "6",
-        tile_8: "7",
-        tile_9: "8",
-        tile_10: "9",
-        tile_11: "10",
-        tile_12: "11",
-        tile_13: "12",
-        tile_14: "13",
-        tile_15: "14",
-        tile_16: "15"
-    };
+    // let goalState2 = {
+    //     tile_1: ".",
+    //     tile_2: "1",
+    //     tile_3: "2",
+    //     tile_4: "3",
+    //     tile_5: "4",
+    //     tile_6: "5",
+    //     tile_7: "6",
+    //     tile_8: "7",
+    //     tile_9: "8",
+    //     tile_10: "9",
+    //     tile_11: "10",
+    //     tile_12: "11",
+    //     tile_13: "12",
+    //     tile_14: "13",
+    //     tile_15: "14",
+    //     tile_16: "15"
+    // };
 
-    return [goalState1, goalState2];   
+    return [goalState1];   
 }
 
-export { cellValuesToPlainArray, setPuzzleGoalStates, getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction }
+function clone(obj){
+    if(obj == null || typeof(obj) != 'object')
+        return obj;
+
+    var temp = new obj.constructor(); 
+    for(var key in obj)
+        temp[key] = clone(obj[key]);
+
+    return temp;
+}
+
+export { clone, cellValuesToPlainArray, setPuzzleGoalStates, getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction }

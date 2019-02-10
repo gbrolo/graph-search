@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Fade, Row, Col, Input } from 'reactstrap';
 
-import { setInitialState } from '../../GraphSearch/SearchHelpers';
+import { setInitialState, aStar } from '../../GraphSearch/SearchHelpers';
 import { cellValuesToPlainArray, setPuzzleGoalStates } from '../../GraphSearch/OperationHelpers';
 
 import './puzzle_board.css';
@@ -51,11 +51,12 @@ class PuzzleBoard extends Component {
 
   solvePuzzle(cellValues) {      
       let initialState = setInitialState(cellValuesToPlainArray(cellValues));
-      let problem = new Problem(initialState, setPuzzleGoalStates(), 'PUZZLE');      
-      console.log(problem.getInitialState().getState());
-      console.log(problem.actions(problem.getInitialState()));
-      console.log(problem.result(problem.getInitialState(), 'UP'));
-
+      //console.log('initialState', initialState);
+      let problem = new Problem(initialState, setPuzzleGoalStates(), 'PUZZLE');            
+      //console.log(problem.getInitialState().getState());
+      console.log(aStar(problem));
+    //   console.log(problem.actions(problem.getInitialState()));
+    //   console.log(problem.result(problem.getInitialState(), 'UP'));      
   }
 
   parseString() {
