@@ -12,6 +12,41 @@ function cellValuesToPlainArray(cellValues) {
     return array;
 }
 
+function determinePuzzleSolvability(plainArray) {
+    let numberArray = plainArray.map(element => {
+        if (element === '.') {
+            return 0
+        } else return parseInt(element);
+    } )
+
+    let inversions = 0;
+
+    for (var i = 0; i < numberArray.length; i++) {
+        for (var j = i + 1; j < numberArray.length; j++) {
+            if ((numberArray[j] < numberArray[i]) && numberArray[j] != 0)
+                inversions = inversions + 1;            
+        }
+    }
+
+    // find if blank is on even or odd row from the bottom
+    let blankIndex = 0;
+
+    for (var i = 0; i < numberArray.length; i++) {
+        if (numberArray[i] === 0)
+            blankIndex = i;
+    }
+
+    // [0-3] : even, [4-7] : odd, [8-11] : even, [12-15] : odd
+    let rowIs = [0,1,2,3].includes(blankIndex) ? 'even' : 
+                [4,5,6,7].includes(blankIndex) ? 'odd' :
+                [8,9,10,11].includes(blankIndex) ? 'even' : 'odd';
+                
+    let inversionsShouldBe = rowIs === 'even' ? 'odd' : 'even';
+    let realInversionsIs = inversions%2 === 0 ? 'even' : 'odd';
+
+    return realInversionsIs === inversionsShouldBe;
+}
+
 function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
 }
@@ -109,4 +144,4 @@ function clone(obj){
     return temp;
 }
 
-export { clone, cellValuesToPlainArray, setPuzzleGoalStates, getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction }
+export { clone, cellValuesToPlainArray, setPuzzleGoalStates, getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction, determinePuzzleSolvability }

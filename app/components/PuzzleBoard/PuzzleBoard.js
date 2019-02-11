@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Fade, Row, Col, Input } from 'reactstrap';
 
 import { setInitialState, aStar } from '../../GraphSearch/SearchHelpers';
-import { cellValuesToPlainArray, setPuzzleGoalStates } from '../../GraphSearch/OperationHelpers';
+import { cellValuesToPlainArray, setPuzzleGoalStates, determinePuzzleSolvability } from '../../GraphSearch/OperationHelpers';
 
 import './puzzle_board.css';
 import Problem from '../../GraphSearch/Problem';
@@ -49,14 +49,22 @@ class PuzzleBoard extends Component {
     }
   }
 
-  solvePuzzle(cellValues) {      
-      let initialState = setInitialState(cellValuesToPlainArray(cellValues));
-      //console.log('initialState', initialState);
-      let problem = new Problem(initialState, setPuzzleGoalStates(), 'PUZZLE');            
-      //console.log(problem.getInitialState().getState());
-      console.log(aStar(problem));
-    //   console.log(problem.actions(problem.getInitialState()));
-    //   console.log(problem.result(problem.getInitialState(), 'UP'));      
+  solvePuzzle(cellValues) {     
+      let plain = cellValuesToPlainArray(cellValues);
+      console.log(plain);
+
+      if (determinePuzzleSolvability(plain)) {
+          let initialState = setInitialState(cellValuesToPlainArray(cellValues));
+          //console.log('initialState', initialState);
+          let problem = new Problem(initialState, setPuzzleGoalStates(), 'PUZZLE');            
+          //console.log(problem.getInitialState().getState());
+          console.log(aStar(problem));
+        //   console.log(problem.actions(problem.getInitialState()));
+        //   console.log(problem.result(problem.getInitialState(), 'UP'));      
+      } else {
+          alert('Puzzle unsolvable!');
+      }
+
   }
 
   parseString() {

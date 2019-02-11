@@ -10,13 +10,13 @@ export default class Problem {
      * @param {String} problemType: either SUDOKU or PUZZLE      
      */
     constructor(initialState, goalStates, problemType) {
-        this.initialState = clone(initialState); 
-        this.goalStates = clone(goalStates);     
+        this.initialState = initialState; 
+        this.goalStates = goalStates;     
         this.problemType = problemType;  
     }
 
     puzzleHeuristic() {
-        return getPuzzleHeuristic(clone(this.initialState));
+        return getPuzzleHeuristic(this.initialState);
     }
 
     getProblemType() {

@@ -16,7 +16,7 @@ export default class State {
      * }
      */
     constructor(locations) {
-        this.locations = clone(locations);
+        this.locations = locations;
     }
 
     getState() {
