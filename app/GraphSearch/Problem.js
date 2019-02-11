@@ -1,4 +1,4 @@
-import { isInside } from './SearchHelpers';
+import { isInside, getPuzzleHeuristic } from './SearchHelpers';
 import { getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction, clone } from './OperationHelpers';
 import State from './State';
 
@@ -15,6 +15,10 @@ export default class Problem {
         this.problemType = problemType;  
     }
 
+    puzzleHeuristic() {
+        return getPuzzleHeuristic(clone(this.initialState));
+    }
+
     getProblemType() {
         return this.problemType;
     }
@@ -26,9 +30,9 @@ export default class Problem {
     actions(s) {
         //console.log('state s is', s);
         if (this.problemType === 'PUZZLE') {
-            let locations = s.getState();
+            var locations = clone(s.getState());
 
-            let tileLocation = getKeyByValue(locations, '.');
+            var tileLocation = getKeyByValue(locations, '.');
             //console.log('tileLocation', tileLocation);
 
             return getPuzzleActions(tileLocation);            
@@ -40,11 +44,11 @@ export default class Problem {
 
     result(s, a) {
         if (this.problemType === 'PUZZLE') {
-            let locations = s.getState();
+            var locations = clone(s.getState());
 
-            let tileLocation = getKeyByValue(locations, '.');
+            var tileLocation = getKeyByValue(locations, '.');
 
-            let newTileLocation = getNewPuzzleTileWithAction(tileLocation, a, this.actions(s));
+            var newTileLocation = getNewPuzzleTileWithAction(tileLocation, a, this.actions(s));
 
             const newTileLocationValue = locations[newTileLocation];
             const tileLocationValue = locations[tileLocation];
@@ -52,7 +56,7 @@ export default class Problem {
             locations[tileLocation] = newTileLocationValue;
             locations[newTileLocation] = tileLocationValue;
 
-            return new State(locations);
+            return new State(clone(locations));
         } else {
             return null;
         }

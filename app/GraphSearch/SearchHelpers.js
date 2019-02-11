@@ -1,6 +1,5 @@
 import Node from './Node';
 import State from './State';
-import PriorityQueue from 'js-priority-queue';
 
 const equal = require('deep-equal');
 
@@ -8,7 +7,8 @@ import { clone } from './OperationHelpers';
 
 function childNode(problem, parent, action) {
     let state = problem.result(clone(parent.getState()), action);
-    let pathCost = parent.getPathCost() + problem.stepCost() + getPuzzleHeuristic(clone(parent.getState())); // TODO test h(n)
+    // let pathCost = clone(parent).getPathCost() + problem.stepCost() + getPuzzleHeuristic(clone(parent.getState())); // TODO test h(n)
+    let pathCost = clone(parent).getPathCost() + problem.stepCost() + getPuzzleHeuristic(clone(parent.getState())); // TODO test h(n)
     let node = new Node(clone(state), clone(parent), action, pathCost);
 
     return node;
@@ -24,10 +24,8 @@ function failure() {
 
 function aStar(problem) {
     console.log('starting algorithm');
-    var node = new Node(clone(problem.getInitialState()), null, null, 0);
-    var frontier = new PriorityQueue({ comparator: function(a, b) { return a.getPathCost() - b.getPathCost() } });
-    frontier.queue(clone(node));
-    var unorderedFrontier = [clone(node)];
+    var node = new Node(clone(problem.getInitialState()), null, null, 0);    
+    var unorderedFrontier = [clone(node)];    
     var explored = [];
 
     // console.log('node is:', node);    
@@ -38,54 +36,109 @@ function aStar(problem) {
     while(true) {
         n = n+1;
         console.log('n=', n);
-        if (frontier.length === 0) {
+
+        if (unorderedFrontier.length === 0) {
             return failure();
-        } else {
-            node = clone(frontier.dequeue());
-            console.log('current state is', clone(node.getState()));
-            console.log('frontier is:', clone(unorderedFrontier));
+        }
+        
+        // node = clone(frontier.dequeue());        
+        node = clone(unorderedFrontier.shift());
+        console.log('current state is', clone(node.getState().getState()));
+        // console.log('frontier is:', clone(unorderedFrontier));
+        // console.log('movements so far', node.getAction());
 
-            if (problem.goalTest(node.getState())) {
-                // console.log('inside goaltest');
-                return solution(clone(node));
-            } else {
-                // console.log('not in goaltest');
-                explored.push(clone(node.getState()));
-            }
+        if (problem.goalTest(clone(node.getState()))) {
+            // console.log('inside goaltest');
+            return solution(clone(node));
+        }
 
-            // console.log('about to check actions');
-            // console.log('frontier is:', frontier);
-            // console.log('unorderedFrontier is:', unorderedFrontier);
-            // console.log('explored is:', explored);
+        console.log('node', clone(node));
 
-            problem.actions(clone(node.getState())).forEach(action => {
-                console.log('current action tested is', action);
-                let child = childNode(clone(problem), clone(node), action);
+        explored.push(clone(node.getState()));
 
-                console.log('new child created:', child);
+        // console.log('about to check actions');
+        // console.log('frontier is:', frontier);
+        // console.log('unorderedFrontier is:', unorderedFrontier);
+        // console.log('explored is:', clone(explored));
 
-                if ((!isInside(clone(child.getState()), explored)) || (!isInside(clone(child.getState()), unorderedFrontier))) {
-                    frontier.queue(clone(child));
-                    unorderedFrontier.push(clone(child));
-                    console.log('child is not inside explored nor frontier');
-                    // console.log('frontier is:', frontier);
-                    // console.log('unorderedFrontier is:', unorderedFrontier);
-                } else if (isInside(clone(child.getState()), unorderedFrontier) && childHasHigherPathCost(child.getPathCost(), unorderedFrontier)) {
-                    console.log('child is inside frontier with higher pathCost')
-                    let newUnorderedFrontier = unorderedFrontier.filter(n => equal(n, clone(node)));
-                    newUnorderedFrontier.push(clone(child));
+        problem.actions(clone(node.getState())).forEach(action => {
+            // console.log('current action tested is', action);
+            var child = childNode(clone(problem), clone(node), action);
 
-                    unorderedFrontier = newUnorderedFrontier;
-                    frontier.clear();
+            // console.log('new child created:', child);   
+            
+            var childCondition = isChildStateInFrontierWithHigherPathCost(clone(child), clone(child.getState()), clone(unorderedFrontier));
 
-                    for (var i = 0; i < newUnorderedFrontier.length; i++) {
-                        frontier.queue(clone(newUnorderedFrontier[i]));
-                    }
+            if (!isChildStateInExploredOrFrontier(clone(child.getState()), clone(explored), clone(unorderedFrontier))) { // GOOD condition                                    
+                unorderedFrontier.push(clone(child));
+                unorderedFrontier.sort(function (a,b) {
+                    return a.pathCost - b.pathCost
+                })
+                
+                // console.log('child is not inside explored nor frontier');
+                // console.log('frontier is:', frontier);
+                // console.log('unorderedFrontier is:', unorderedFrontier);
+            } else if (childCondition.result === true) { // BAD condition
+                // console.log('child is inside frontier with higher pathCost')     
+                // console.log('unorderedFrontier just before splice', clone(unorderedFrontier));        
+                unorderedFrontier.splice(childCondition.frontierIndex, 1, clone(child));
+                unorderedFrontier.sort(function (a,b) {
+                    return a.pathCost - b.pathCost
+                })                
 
-                    // console.log('frontier is:', frontier);
-                    // console.log('unorderedFrontier is:', unorderedFrontier);
-                }
-            });
+                // console.log('unorderedFrontier with new node and ordered', clone(unorderedFrontier))
+
+                // console.log('frontier is:', frontier);
+                // console.log('unorderedFrontier is:', unorderedFrontier);
+            }                                    
+
+        });
+    }
+}
+
+/**
+ * 
+ * @param {State*} childState 
+ * @param {Array[State]} explored 
+ * @param {Array[Node]} unorderedFrontier 
+ */
+function isChildStateInExploredOrFrontier(childState, explored, unorderedFrontier) {
+    let insideExplored = isInside(childState, explored);
+    let frontierStates = unorderedFrontier.map(node => {
+        return clone(node.getState());
+    })
+    let insideFrontier = isInside(childState, frontierStates);
+
+    return insideExplored || insideFrontier;
+}
+
+function isChildStateInFrontierWithHigherPathCost(child, childState, unorderedFrontier) {
+    let frontierStates = unorderedFrontier.map(node => {
+        return clone(node.getState());
+    })
+    let insideFrontier = isInside(childState, frontierStates);
+
+    // if is inside the frontier, check if that node has the highest path cost
+    if (insideFrontier) {
+        // console.log('child is inside frontier...');
+        let frontierIndex = getFrontierStateIndex(childState, frontierStates);
+        let frontierNode = clone(unorderedFrontier[frontierIndex]);
+        // console.log('frontier node index is', frontierIndex);
+        // console.log('frontier node is', frontierNode);
+        let frontierPathCost = frontierNode.getPathCost();
+        let childPathCost = clone(child).getPathCost();
+
+        if (childPathCost <= frontierPathCost) {
+            // console.log('and child cost is lower!');
+            return { result: true, frontierIndex };
+        } else return { result: false };
+    } else return { result: false };
+}
+
+function getFrontierStateIndex(object, array) {
+    for (var i = 0; i < array.length; i++) {
+        if (equal(array[i], object)) {
+            return i;
         }
     }
 }
@@ -139,4 +192,4 @@ function getPuzzleHeuristic(state) {
     return misplaced;
 }
 
-export { childNode, aStar, setInitialState, isInside }
+export { childNode, aStar, setInitialState, isInside, getPuzzleHeuristic }
