@@ -1,4 +1,4 @@
-import { isInside, getPuzzleHeuristic } from './SearchHelpers';
+import { isInside, getPuzzleHeuristic ,isSudokuStateAGoalState } from './SearchHelpers';
 import { getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction, clone } from './OperationHelpers';
 import State from './State';
 
@@ -63,10 +63,14 @@ export default class Problem {
     }
 
     goalTest(s) {
-        // console.log('entering goalTest function, comparing:');
-        // console.log('clone(s)', clone(s));
-        // console.log('this.goalStates', this.goalStates);
-        return isInside(clone(s).getState(), this.goalStates);
+        if (this.problemType === 'PUZZLE') {
+            // console.log('entering goalTest function, comparing:');
+            // console.log('clone(s)', clone(s));
+            // console.log('this.goalStates', this.goalStates);
+            return isInside(clone(s).getState(), this.goalStates);
+        } else {
+            return isSudokuStateAGoalState(clone(s).getState());
+        }
     }
 
     stepCost() {

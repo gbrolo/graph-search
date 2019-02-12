@@ -179,6 +179,27 @@ function setInitialState(array) {
     return initialState;
 }
 
+function setSudokuInitialState(array) {
+    let locations = {}
+    let foundFirstBlank = false;
+
+    for (var i = 0; i < array.length; i++) {
+        let index = i + 1;
+        var value = array[i];
+        if (value === "." && !foundFirstBlank) {
+            value = "*";
+            foundFirstBlank = true;
+        }
+        locations['tile_' + index] = value;        
+    }
+
+    // console.log('locations is', locations);
+
+    let initialState = new State(locations);
+
+    return initialState;
+}
+
 function getPuzzleHeuristic(state) {
     let locations = state.getState();
     let misplaced = 0;
@@ -194,4 +215,139 @@ function getPuzzleHeuristic(state) {
     return misplaced;
 }
 
-export { childNode, aStar, setInitialState, isInside, getPuzzleHeuristic }
+function isSudokuStateAGoalState(state) {
+    let locations = state;
+    console.log('locations', locations);    
+
+    let stateToPlainArray = [];
+    
+    Object.keys(locations).forEach((key, i) => {
+        stateToPlainArray.push(locations[key]);
+    });
+
+    console.log('stateToPlainArray', stateToPlainArray);
+    let validGoalState = true;
+
+    let row_1 = [
+        stateToPlainArray[0],
+        stateToPlainArray[1],
+        stateToPlainArray[2],
+        stateToPlainArray[3]
+    ];
+
+    let row_2 = [
+        stateToPlainArray[4],
+        stateToPlainArray[5],
+        stateToPlainArray[6],
+        stateToPlainArray[7]
+    ];
+
+    let row_3 = [
+        stateToPlainArray[8],
+        stateToPlainArray[9],
+        stateToPlainArray[10],
+        stateToPlainArray[11]
+    ];
+
+    let row_4 = [
+        stateToPlainArray[12],
+        stateToPlainArray[13],
+        stateToPlainArray[14],
+        stateToPlainArray[15]
+    ];
+
+    // columns
+    let column_1 = [
+        stateToPlainArray[0],
+        stateToPlainArray[4],
+        stateToPlainArray[8],
+        stateToPlainArray[12]
+    ];
+
+    let column_2 = [
+        stateToPlainArray[1],
+        stateToPlainArray[5],
+        stateToPlainArray[9],
+        stateToPlainArray[13]
+    ];
+
+    let column_3 = [
+        stateToPlainArray[2],
+        stateToPlainArray[6],
+        stateToPlainArray[10],
+        stateToPlainArray[14]
+    ];
+
+    let column_4 = [
+        stateToPlainArray[3],
+        stateToPlainArray[7],
+        stateToPlainArray[11],
+        stateToPlainArray[15]
+    ];
+
+    // subsquares
+    let square_1 = [
+        stateToPlainArray[0],
+        stateToPlainArray[1],
+        stateToPlainArray[4],
+        stateToPlainArray[5]
+    ];
+
+    let square_2 = [
+        stateToPlainArray[2],
+        stateToPlainArray[3],
+        stateToPlainArray[6],
+        stateToPlainArray[7]
+    ];
+
+    let square_3 = [
+        stateToPlainArray[8],
+        stateToPlainArray[9],
+        stateToPlainArray[12],
+        stateToPlainArray[13]
+    ];
+
+    let square_4 = [
+        stateToPlainArray[10],
+        stateToPlainArray[11],
+        stateToPlainArray[14],
+        stateToPlainArray[15]
+    ];
+
+    let arraysToTest = [
+        row_1, row_2, row_3, row_4,
+        column_1, column_2, column_3, column_4,
+        square_1, square_2, square_3, square_4
+    ];
+
+    console.log('arraysToTest', arraysToTest);
+
+    for (var i = 0; i < arraysToTest.length; i++) {
+        let testing = arraysToTest[i];
+
+        var found_1 = 0;
+        var found_2 = 0;
+        var found_3 = 0;
+        var found_4 = 0;
+
+        for (var j = 0; j < testing.length; j++) {
+            if (testing[j] === '1') {
+                found_1 = found_1 + 1;
+            } else if (testing[j] === '2') {
+                found_2 = found_2 + 1;
+            } else if (testing[j] === '3') {
+                found_3 = found_3 + 1;
+            } else if (testing[j] === '4') {
+                found_4 = found_4 + 1;
+            }
+        }
+
+        if ((found_1 != 1) || (found_2 != 1) || (found_3 != 1) || (found_4 != 1)) {
+            validGoalState = false;
+        }
+    }
+
+    return validGoalState;
+}
+
+export { childNode, aStar, setInitialState, isInside, getPuzzleHeuristic, setSudokuInitialState, isSudokuStateAGoalState }

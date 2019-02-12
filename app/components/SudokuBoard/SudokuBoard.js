@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { Button, Fade, Row, Col, Input } from 'reactstrap';
 
 import './sudoku.css';
+import { cellValuesToPlainArray } from '../../GraphSearch/OperationHelpers';
+import { setInitialState, setSudokuInitialState } from '../../GraphSearch/SearchHelpers';
+
+import Problem from '../../GraphSearch/Problem';
 
 const colStyle = {
     display: 'flex',
@@ -45,6 +49,17 @@ class SudokuBoard extends Component {
     }
   }
 
+  solveSudoku(cellValues) {
+    let plain = cellValuesToPlainArray(cellValues);
+    
+    let initialState = setSudokuInitialState(plain);
+    console.log(initialState);
+    let problem = new Problem(initialState, null, 'SUDOKU'); 
+    console.log(problem.goalTest(initialState));
+
+    this.setState({ cellValues })
+  }
+
   parseString() {
       let array = this.state.input.split('');
       let cellValues = [];
@@ -57,7 +72,7 @@ class SudokuBoard extends Component {
           cellValues.push(row);
       }      
 
-      this.setState({ cellValues });
+      this.solveSudoku(cellValues);
   }
 
   render() {      
