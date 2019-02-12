@@ -144,4 +144,55 @@ function clone(obj){
     return temp;
 }
 
-export { clone, cellValuesToPlainArray, setPuzzleGoalStates, getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction, determinePuzzleSolvability }
+function finalNodeToStateArray(node) {
+    let traverse = true;
+    let locations = [];
+    let locationArray = [];
+
+    while(traverse) {
+        locations.push(node.getState().getState());
+
+        if (node.getPathCost() === 0) {
+            traverse = false;
+        } else {
+            node = node.getParent();
+        }
+    }
+
+    for(var s = 0; s < locations.length; s++) {
+        let location = locations[s];
+        let arrayElement = [];
+
+        for (var key in location) {
+            arrayElement.push(location[key]);
+        }
+
+        locationArray.push(arrayElement);
+    }
+
+    let orderedArray = [];
+
+    for (var t = 0; t < locationArray.length; t++) {
+        let element = [];
+
+        var arr = locationArray[t];
+        for (var x = 0; x < locationArray[t].length; x++) {
+            let row = [];
+
+            for (var y = 0; y < 4; y++) {
+                row.push(arr.shift());
+            }
+
+            element.push(row);
+
+        }
+
+        orderedArray.push(element);
+    }
+
+    locations = orderedArray;
+
+    return(locations);
+}
+
+export { clone, cellValuesToPlainArray, setPuzzleGoalStates, getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction, determinePuzzleSolvability, finalNodeToStateArray }

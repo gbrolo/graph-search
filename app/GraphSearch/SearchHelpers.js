@@ -37,7 +37,7 @@ function aStar(problem) {
     let n = 0;
     while(true) {
         n = n+1;
-        console.log('n=', n);
+        // console.log('n=', n);
 
         if (unorderedFrontier.length === 0) {
             return failure();

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Fade, Row, Col, Input } from 'reactstrap';
 
 import { setInitialState, aStar } from '../../GraphSearch/SearchHelpers';
-import { cellValuesToPlainArray, setPuzzleGoalStates, determinePuzzleSolvability } from '../../GraphSearch/OperationHelpers';
+import { cellValuesToPlainArray, setPuzzleGoalStates, determinePuzzleSolvability, finalNodeToStateArray } from '../../GraphSearch/OperationHelpers';
 
 import './puzzle_board.css';
 import Problem from '../../GraphSearch/Problem';
@@ -39,32 +39,61 @@ class PuzzleBoard extends Component {
     super(props);    
 
     this.state = {
-        input: 'F21C856B49A73ED.',
+        input: '',
         cellValues: [
-            ['15', '2', '1', '12'],
-            ['8', '5', '6', '11'],
-            ['4', '9', '10', '7'],
-            ['3', '14', '13', '.']
-        ]
+            ['1', '2', '3', '4'],
+            ['5', '6', '7', '8'],
+            ['9', '10', '11', '12'],
+            ['13', '14', '15', '.']
+        ],        
+        stateArray: []
     }
   }
 
   solvePuzzle(cellValues) {     
       let plain = cellValuesToPlainArray(cellValues);
-      console.log(plain);
+    //   console.log(plain);
 
       if (determinePuzzleSolvability(plain)) {
           let initialState = setInitialState(cellValuesToPlainArray(cellValues));
           //console.log('initialState', initialState);
           let problem = new Problem(initialState, setPuzzleGoalStates(), 'PUZZLE');            
           //console.log(problem.getInitialState().getState());
-          console.log(aStar(problem));
+          let result = aStar(problem);
+          console.log(result);
+
+          let stateArray = finalNodeToStateArray(result.node);
+        //   console.log(stateArray);
+          this.animateBoard(stateArray);
+        //   this.setState({ stateArray, cellValues })
         //   console.log(problem.actions(problem.getInitialState()));
         //   console.log(problem.result(problem.getInitialState(), 'UP'));      
       } else {
           alert('Puzzle unsolvable!');
       }
 
+  }
+
+  animateBoard(stateArray) {
+    //   let { stateArray } = this.state;
+      stateArray = stateArray.reverse();
+
+      this.stateArray = setInterval(() => {
+        if (stateArray.length === 0) {
+            clearInterval(this.stateArray);
+        } else {
+            this.setState({
+                cellValues: stateArray.shift()
+            })
+        }
+      }, 600);
+
+    //   stateArray.forEach(configuration => {
+    //       let apply = () => this.setState({ cellValues: configuration });
+    //       console.log(configuration);
+          
+    //       setTimeout(() => apply(), 1000);
+    //   })
   }
 
   parseString() {
@@ -86,12 +115,10 @@ class PuzzleBoard extends Component {
           cellValues.push(row);
       }  
       
-      this.solvePuzzle(cellValues);
-
-      this.setState({ cellValues });
+      this.solvePuzzle(cellValues);      
   }
 
-  render() {      
+  render() {         
     return (
       <Fade in={true} timeout={600} style={{ width: '100%', height: '50%' }}>
         <div className="puzzle-wrapper">
@@ -105,21 +132,18 @@ class PuzzleBoard extends Component {
                         type="text" 
                         name="input" 
                         id="input" 
-                        placeholder="Enter string to test"
-                        defaultValue="F21C856B49A73ED."
+                        placeholder="Enter string to test"                        
                         onChange={(event) => this.setState({ input: event.target.value })} />
                 </Col>
-                <Col xs={12} sm={12} md={3} lg={3} style={colStyle}>
-                    <Button className="txt-uppercase abel-font" outline onClick={() => this.parseString()}>Apply string</Button>
-                </Col>
-                <Col xs={12} sm={12} md={3} lg={3} style={colStyle}>
-                    <Button className="txt-uppercase abel-font" outline>Solve</Button>
+                <Col xs={12} sm={12} md={6} lg={6} style={colStyle}>
+                    <Button className="txt-uppercase abel-font" outline onClick={() => this.parseString()}>Solve Puzzle</Button>
                 </Col>
             </Row>
             <Row style={{
                 width: '50%',
                 height: '100%',
-                marginTop: 20
+                marginTop: 20,
+                paddingBottom: 20
             }}>
                 <Col xs={12} sm={12} md={6} lg={6} style={boardCol}>
                     <div className="board">
@@ -154,7 +178,7 @@ class PuzzleBoard extends Component {
                     </div>
                 </Col>
                 <Col xs={12} sm={12} md={6} lg={6} style={colStyle}>
-                    Output
+
                 </Col>
             </Row>
         </div>

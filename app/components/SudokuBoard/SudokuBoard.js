@@ -66,7 +66,8 @@ class SudokuBoard extends Component {
         <div className="sudoku-wrapper">
             <Row style={{
                 width: '50%',
-                marginTop: 20
+                marginTop: 20,
+                paddingBottom: 20
             }}> 
                 <Col xs={12} sm={12} md={6} lg={6} style={colStyle}>
                     <Input 
@@ -121,8 +122,7 @@ class SudokuBoard extends Component {
                         }                        
                     </div>
                 </Col>
-                <Col xs={12} sm={12} md={6} lg={6} style={colStyle}>
-                    Output
+                <Col xs={12} sm={12} md={6} lg={6} style={colStyle}>                
                 </Col>
             </Row>
         </div>
