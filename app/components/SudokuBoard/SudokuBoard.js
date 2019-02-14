@@ -3,7 +3,7 @@ import { Button, Fade, Row, Col, Input } from 'reactstrap';
 
 import './sudoku.css';
 import { cellValuesToPlainArray } from '../../GraphSearch/OperationHelpers';
-import { setInitialState, setSudokuInitialState } from '../../GraphSearch/SearchHelpers';
+import { setInitialState, setSudokuInitialState, aStar } from '../../GraphSearch/SearchHelpers';
 
 import Problem from '../../GraphSearch/Problem';
 
@@ -55,8 +55,12 @@ class SudokuBoard extends Component {
     let initialState = setSudokuInitialState(plain);
     console.log(initialState);
     let problem = new Problem(initialState, null, 'SUDOKU'); 
-    console.log(problem.goalTest(initialState));
-    console.log(problem.result(initialState, problem.actions(initialState)[0]));
+    // console.log(problem.goalTest(initialState));
+    // console.log(problem.actions(initialState));
+    // console.log(problem.result(initialState, problem.actions(initialState)[0]));
+
+    let result = aStar(problem);
+    console.log(result);
 
     this.setState({ cellValues })
   }

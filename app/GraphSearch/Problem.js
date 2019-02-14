@@ -66,6 +66,18 @@ export default class Problem {
 
             locations[tileLocation] = a;
 
+            let appeared = false;
+            let keyToChange = '';
+            // result has to have new first blank with * BUG
+            Object.keys(locations).forEach((key, index) => {
+                if(locations[key] === '.' && !appeared) {
+                    keyToChange = key;
+                    appeared = true;
+                }
+            })
+
+            locations[keyToChange] = '*';
+
             return new State(clone(locations));
         }
     }
@@ -85,7 +97,7 @@ export default class Problem {
         if (this.problemType === 'PUZZLE') {
             return 1
         } else {
-            return null;
+            return 1;
         }
     }
 
