@@ -10,7 +10,7 @@ function childNode(problem, parent, action) {
     // let pathCost = clone(parent).getPathCost() + problem.stepCost() + getPuzzleHeuristic(clone(parent.getState())); // TODO test h(n)
     
     let problemType = problem.getProblemType();
-    console.log('problemType is: ', problemType);
+    // console.log('problemType is: ', problemType);
     let heuristicCost = 0;
 
     if (problemType === 'PUZZLE') {
@@ -41,9 +41,9 @@ function aStar(problem) {
     var unorderedFrontier = [node];    
     var explored = [];
 
-    console.log('node is:', node);    
-    console.log('unorderedFrontier is:', unorderedFrontier);
-    console.log('explored is:', explored);
+    // console.log('node is:', node);    
+    // console.log('unorderedFrontier is:', unorderedFrontier);
+    // console.log('explored is:', explored);
 
     let n = 0;
     while(true) {
@@ -69,16 +69,16 @@ function aStar(problem) {
 
         explored.push(node.getState());
 
-        console.log('about to check actions');
+        // console.log('about to check actions');
         // console.log('frontier is:', frontier);
-        console.log('unorderedFrontier is:', unorderedFrontier);
-        console.log('explored is:', clone(explored));
+        // console.log('unorderedFrontier is:', unorderedFrontier);
+        // console.log('explored is:', clone(explored));
 
         problem.actions(node.getState()).forEach(action => {
-            console.log('current action tested is', action);
+            // console.log('current action tested is', action);
             var child = childNode(problem, node, action);
 
-            console.log('new child created:', child);   
+            // console.log('new child created:', child);   
             
             var childCondition = isChildStateInFrontierWithHigherPathCost(child, child.getState(), unorderedFrontier);
 
