@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Fade, Row, Col, Input } from 'reactstrap';
 
 import './sudoku.css';
-import { cellValuesToPlainArray } from '../../GraphSearch/OperationHelpers';
+import { cellValuesToPlainArray, finalNodeToStateArray } from '../../GraphSearch/OperationHelpers';
 import { setInitialState, setSudokuInitialState, aStar } from '../../GraphSearch/SearchHelpers';
 
 import Problem from '../../GraphSearch/Problem';
@@ -62,7 +62,34 @@ class SudokuBoard extends Component {
     let result = aStar(problem);
     console.log(result);
 
+    let stateArray = finalNodeToStateArray(result.node);
+    // stateArray = stateArray.filter(item => item != '*');
+    
+    this.animateBoard(stateArray);
+
     this.setState({ cellValues })
+  }
+
+  animateBoard(stateArray) {
+    //   let { stateArray } = this.state;
+      stateArray = stateArray.reverse();
+
+      this.stateArray = setInterval(() => {
+        if (stateArray.length === 0) {
+            clearInterval(this.stateArray);
+        } else {
+            this.setState({
+                cellValues: stateArray.shift()
+            })
+        }
+      }, 600);
+
+    //   stateArray.forEach(configuration => {
+    //       let apply = () => this.setState({ cellValues: configuration });
+    //       console.log(configuration);
+          
+    //       setTimeout(() => apply(), 1000);
+    //   })
   }
 
   parseString() {
