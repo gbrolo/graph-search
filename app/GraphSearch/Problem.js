@@ -1,5 +1,5 @@
 import { isInside, getPuzzleHeuristic ,isSudokuStateAGoalState } from './SearchHelpers';
-import { getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction, clone } from './OperationHelpers';
+import { getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction, clone, getSudokuActions } from './OperationHelpers';
 import State from './State';
 
 export default class Problem {
@@ -38,7 +38,10 @@ export default class Problem {
             return getPuzzleActions(tileLocation);            
 
         } else {
-            return null;
+            var locations = clone(s.getState());
+            var tileLocation = getKeyByValue(locations, '*');
+            
+            return getSudokuActions(tileLocation, clone(s).getState());
         }
     }
 

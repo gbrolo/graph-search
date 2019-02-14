@@ -216,16 +216,14 @@ function getPuzzleHeuristic(state) {
 }
 
 function isSudokuStateAGoalState(state) {
-    let locations = state;
-    console.log('locations', locations);    
+    let locations = state;      
 
     let stateToPlainArray = [];
     
     Object.keys(locations).forEach((key, i) => {
         stateToPlainArray.push(locations[key]);
     });
-
-    console.log('stateToPlainArray', stateToPlainArray);
+    
     let validGoalState = true;
 
     let row_1 = [
@@ -318,9 +316,7 @@ function isSudokuStateAGoalState(state) {
         row_1, row_2, row_3, row_4,
         column_1, column_2, column_3, column_4,
         square_1, square_2, square_3, square_4
-    ];
-
-    console.log('arraysToTest', arraysToTest);
+    ];    
 
     for (var i = 0; i < arraysToTest.length; i++) {
         let testing = arraysToTest[i];

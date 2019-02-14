@@ -73,6 +73,115 @@ function getPuzzleActions(tileLocation) {
     }
 }
 
+function getSudokuActions(tileLocation, state) {    
+    let locations = state;      
+    let stateToPlainArray = [];
+    
+    Object.keys(locations).forEach((key, i) => {
+        stateToPlainArray.push(locations[key]);
+    });
+
+    let validNumbers = ['1', '2', '3','4'];
+    let actions = [];
+
+    let neighbours = {
+        tile_1: {
+            rowNeighbours: [stateToPlainArray[1], stateToPlainArray[2], stateToPlainArray[3]],
+            colNeighbours: [stateToPlainArray[4], stateToPlainArray[8], stateToPlainArray[12]],
+            squareNeighbours: [stateToPlainArray[1], stateToPlainArray[4], stateToPlainArray[5]]
+        },
+        tile_2: {
+            rowNeighbours: [stateToPlainArray[0], stateToPlainArray[2], stateToPlainArray[3]],
+            colNeighbours: [stateToPlainArray[5], stateToPlainArray[9], stateToPlainArray[13]],
+            squareNeighbours: [stateToPlainArray[0], stateToPlainArray[4], stateToPlainArray[5]]
+        },
+        tile_3: {
+            rowNeighbours: [stateToPlainArray[0], stateToPlainArray[1], stateToPlainArray[3]],
+            colNeighbours: [stateToPlainArray[6], stateToPlainArray[10], stateToPlainArray[14]],
+            squareNeighbours: [stateToPlainArray[3], stateToPlainArray[6], stateToPlainArray[7]]
+        },
+        tile_4: {
+            rowNeighbours: [stateToPlainArray[0], stateToPlainArray[1], stateToPlainArray[2]],
+            colNeighbours: [stateToPlainArray[7], stateToPlainArray[11], stateToPlainArray[15]],
+            squareNeighbours: [stateToPlainArray[2], stateToPlainArray[6], stateToPlainArray[7]]
+        },
+
+        tile_5: {
+            rowNeighbours: [stateToPlainArray[5], stateToPlainArray[6], stateToPlainArray[7]],
+            colNeighbours: [stateToPlainArray[0], stateToPlainArray[8], stateToPlainArray[12]],
+            squareNeighbours: [stateToPlainArray[0], stateToPlainArray[1], stateToPlainArray[5]]
+        },
+        tile_6: {
+            rowNeighbours: [stateToPlainArray[4], stateToPlainArray[6], stateToPlainArray[7]],
+            colNeighbours: [stateToPlainArray[1], stateToPlainArray[9], stateToPlainArray[13]],
+            squareNeighbours: [stateToPlainArray[0], stateToPlainArray[1], stateToPlainArray[4]]
+        },
+        tile_7: {
+            rowNeighbours: [stateToPlainArray[4], stateToPlainArray[5], stateToPlainArray[7]],
+            colNeighbours: [stateToPlainArray[2], stateToPlainArray[10], stateToPlainArray[14]],
+            squareNeighbours: [stateToPlainArray[2], stateToPlainArray[3], stateToPlainArray[7]]
+        },
+        tile_8: {
+            rowNeighbours: [stateToPlainArray[4], stateToPlainArray[5], stateToPlainArray[6]],
+            colNeighbours: [stateToPlainArray[3], stateToPlainArray[11], stateToPlainArray[15]],
+            squareNeighbours: [stateToPlainArray[2], stateToPlainArray[3], stateToPlainArray[6]]
+        },
+
+        tile_9: {
+            rowNeighbours: [stateToPlainArray[9], stateToPlainArray[10], stateToPlainArray[11]],
+            colNeighbours: [stateToPlainArray[0], stateToPlainArray[4], stateToPlainArray[12]],
+            squareNeighbours: [stateToPlainArray[9], stateToPlainArray[12], stateToPlainArray[13]]
+        },
+        tile_10: {
+            rowNeighbours: [stateToPlainArray[8], stateToPlainArray[10], stateToPlainArray[11]],
+            colNeighbours: [stateToPlainArray[1], stateToPlainArray[5], stateToPlainArray[13]],
+            squareNeighbours: [stateToPlainArray[8], stateToPlainArray[12], stateToPlainArray[13]]
+        },
+        tile_11: {
+            rowNeighbours: [stateToPlainArray[8], stateToPlainArray[9], stateToPlainArray[11]],
+            colNeighbours: [stateToPlainArray[2], stateToPlainArray[6], stateToPlainArray[14]],
+            squareNeighbours: [stateToPlainArray[11], stateToPlainArray[14], stateToPlainArray[15]]
+        },
+        tile_12: {
+            rowNeighbours: [stateToPlainArray[8], stateToPlainArray[9], stateToPlainArray[10]],
+            colNeighbours: [stateToPlainArray[3], stateToPlainArray[7], stateToPlainArray[15]],
+            squareNeighbours: [stateToPlainArray[10], stateToPlainArray[14], stateToPlainArray[15]]
+        },
+
+        tile_13: {
+            rowNeighbours: [stateToPlainArray[13], stateToPlainArray[14], stateToPlainArray[15]],
+            colNeighbours: [stateToPlainArray[0], stateToPlainArray[4], stateToPlainArray[8]],
+            squareNeighbours: [stateToPlainArray[8], stateToPlainArray[9], stateToPlainArray[13]]
+        },
+        tile_14: {
+            rowNeighbours: [stateToPlainArray[12], stateToPlainArray[14], stateToPlainArray[15]],
+            colNeighbours: [stateToPlainArray[1], stateToPlainArray[5], stateToPlainArray[9]],
+            squareNeighbours: [stateToPlainArray[8], stateToPlainArray[9], stateToPlainArray[12]]
+        },
+        tile_15: {
+            rowNeighbours: [stateToPlainArray[12], stateToPlainArray[13], stateToPlainArray[15]],
+            colNeighbours: [stateToPlainArray[2], stateToPlainArray[6], stateToPlainArray[10]],
+            squareNeighbours: [stateToPlainArray[10], stateToPlainArray[11], stateToPlainArray[15]]
+        },
+        tile_16: {
+            rowNeighbours: [stateToPlainArray[12], stateToPlainArray[13], stateToPlainArray[14]],
+            colNeighbours: [stateToPlainArray[3], stateToPlainArray[7], stateToPlainArray[11]],
+            squareNeighbours: [stateToPlainArray[10], stateToPlainArray[11], stateToPlainArray[14]]
+        },
+    }
+
+    validNumbers.forEach(number => {
+        if ((!neighbours[tileLocation].rowNeighbours.includes(number)) && 
+            (!neighbours[tileLocation].colNeighbours.includes(number)) && 
+            (!neighbours[tileLocation].squareNeighbours.includes(number))) {
+            actions.push(number);
+        }
+    })
+
+    return actions;
+    
+}
+
 function getNewPuzzleTileWithAction(tileLocation, action, actions) {
     let index = parseInt(tileLocation.substr(5, tileLocation.length-1));
 
@@ -195,4 +304,4 @@ function finalNodeToStateArray(node) {
     return(locations);
 }
 
-export { clone, cellValuesToPlainArray, setPuzzleGoalStates, getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction, determinePuzzleSolvability, finalNodeToStateArray }
+export { clone, cellValuesToPlainArray, setPuzzleGoalStates, getKeyByValue, getPuzzleActions, getNewPuzzleTileWithAction, determinePuzzleSolvability, finalNodeToStateArray, getSudokuActions }
