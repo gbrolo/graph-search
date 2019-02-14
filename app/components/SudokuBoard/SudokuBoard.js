@@ -56,7 +56,7 @@ class SudokuBoard extends Component {
     console.log(initialState);
     let problem = new Problem(initialState, null, 'SUDOKU'); 
     console.log(problem.goalTest(initialState));
-    console.log(problem.actions(initialState));
+    console.log(problem.result(initialState, problem.actions(initialState)[0]));
 
     this.setState({ cellValues })
   }

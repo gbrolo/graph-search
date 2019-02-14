@@ -61,7 +61,12 @@ export default class Problem {
 
             return new State(clone(locations));
         } else {
-            return null;
+            var locations = clone(s.getState());
+            var tileLocation = getKeyByValue(locations, '*');
+
+            locations[tileLocation] = a;
+
+            return new State(clone(locations));
         }
     }
 
