@@ -1,10 +1,20 @@
+/**
+ * SearchHelpers.js
+ * Functions that help in solving the problem.
+ * Contains the actual A* algorithm.
+ */
+
 import Node from './Node';
 import State from './State';
 
-const equal = require('deep-equal');
+const equal = require('deep-equal'); // for comparing objects
 
-import { clone } from './OperationHelpers';
-
+/**
+ * Generates a child Node for a Problem, given a paren Node and an action
+ * @param {Problem} problem 
+ * @param {Node} parent 
+ * @param {String} action 
+ */
 function childNode(problem, parent, action) {
     let state = problem.result(parent.getState(), action);
     // let pathCost = clone(parent).getPathCost() + problem.stepCost() + getPuzzleHeuristic(clone(parent.getState())); // TODO test h(n)
@@ -27,14 +37,25 @@ function childNode(problem, parent, action) {
     return node;
 }
 
+/**
+ * Returns a solution response and a solution Node.
+ * @param {Node} node 
+ */
 function solution(node) {
     return { solution: true, node };
 }
 
+/**
+ * Returns FAILURE: problem can't be solved.
+ */
 function failure() {
     return { solution: false };
 }
 
+/**
+ * Solves Problem using A* algorithm
+ * @param {Problem} problem 
+ */
 function aStar(problem) {
     console.log('starting algorithm');
     var node = new Node(problem.getInitialState(), null, null, 0);    
@@ -110,7 +131,7 @@ function aStar(problem) {
 }
 
 /**
- * 
+ * Determines whether child Node is inside explored list or frontier priority queue
  * @param {State} childState 
  * @param {Array[State]} explored 
  * @param {Array[Node]} unorderedFrontier 
@@ -125,6 +146,13 @@ function isChildStateInExploredOrFrontier(childState, explored, unorderedFrontie
     return insideExplored || insideFrontier;
 }
 
+/**
+ * Determines if State inside child Node is already inside the Frontier (inside another Node),
+ * with a higher Path Cost than new child Node.
+ * @param {Node} child 
+ * @param {State} childState 
+ * @param {Array} unorderedFrontier 
+ */
 function isChildStateInFrontierWithHigherPathCost(child, childState, unorderedFrontier) {
     let frontierStates = unorderedFrontier.map(node => {
         return node.getState();
@@ -148,6 +176,11 @@ function isChildStateInFrontierWithHigherPathCost(child, childState, unorderedFr
     } else return { result: false };
 }
 
+/**
+ * Returns frontier element index
+ * @param {Object} object 
+ * @param {Array} array 
+ */
 function getFrontierStateIndex(object, array) {
     for (var i = 0; i < array.length; i++) {
         if (equal(array[i], object)) {
@@ -156,6 +189,11 @@ function getFrontierStateIndex(object, array) {
     }
 }
 
+/**
+ * Determines if Object is inside Array
+ * @param {Object} object 
+ * @param {Array} array 
+ */
 function isInside(object, array) {          
     for (var i = 0; i < array.length; i++) {
         if (equal(array[i], object)) {
@@ -174,6 +212,10 @@ function childHasHigherPathCost(childPathCost, unorderedFrontier) {
     return max === childPathCost;
 }
 
+/**
+ * Sets PUZZLE initial State
+ * @param {Array} array 
+ */
 function setInitialState(array) {    
     // console.log('setting initial state for', array);
     let locations = {}
@@ -190,6 +232,10 @@ function setInitialState(array) {
     return initialState;
 }
 
+/**
+ * Sets SUDOKU initial State
+ * @param {Array} array 
+ */
 function setSudokuInitialState(array) {
     let locations = {}
     let foundFirstBlank = false;
@@ -211,6 +257,10 @@ function setSudokuInitialState(array) {
     return initialState;
 }
 
+/**
+ * Returns heuristic value [h(n)] for current State in PUZZLE problem
+ * @param {State} state 
+ */
 function getPuzzleHeuristic(state) {
     let locations = state.getState();
     let misplaced = 0;
@@ -226,10 +276,18 @@ function getPuzzleHeuristic(state) {
     return misplaced;
 }
 
+/**
+ * Returns heuristic value [h(n)] for current State in Sudoku problem
+ * @param {String} action 
+ */
 function getSudokuHeuristic(action) {
     return parseInt(action);
 }
 
+/**
+ * Determines if current State is a goal state in SUDOKU problem
+ * @param {State} state 
+ */
 function isSudokuStateAGoalState(state) {
     let locations = state;      
 

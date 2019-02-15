@@ -1,3 +1,8 @@
+/**
+ * OperationHelpers.js
+ * Functions that help in solving the problem. 
+ */
+
 function cellValuesToPlainArray(cellValues) {
     let array = [];
 

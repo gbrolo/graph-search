@@ -3,7 +3,7 @@ import { Button, Fade, Row, Col, Input } from 'reactstrap';
 
 import './sudoku.css';
 import { cellValuesToPlainArray, finalNodeToStateArray } from '../../GraphSearch/OperationHelpers';
-import { setInitialState, setSudokuInitialState, aStar } from '../../GraphSearch/SearchHelpers';
+import { setSudokuInitialState, aStar } from '../../GraphSearch/SearchHelpers';
 
 import Problem from '../../GraphSearch/Problem';
 
@@ -40,12 +40,7 @@ class SudokuBoard extends Component {
 
     this.state = {
         input: null,
-        cellValues: [
-            ['.', '4', '.', '1'],
-            ['3', '.', '4', '.'],
-            ['1', '.', '.', '4'],
-            ['.', '2', '1', '.']
-        ]
+        cellValues: [['.', '.', '.', '.'], ['.', '.', '.', '.'], ['.', '.', '.', '.'], ['.', '.', '.', '.']]
     }
   }
 
@@ -125,12 +120,9 @@ class SudokuBoard extends Component {
                         placeholder="Enter string to test"
                         onChange={(event) => this.setState({ input: event.target.value })} />
                 </Col>
-                <Col xs={12} sm={12} md={3} lg={3} style={colStyle}>
-                    <Button className="txt-uppercase abel-font" outline onClick={() => this.parseString()}>Apply string</Button>
-                </Col>
-                <Col xs={12} sm={12} md={3} lg={3} style={colStyle}>
-                    <Button className="txt-uppercase abel-font" outline>Solve</Button>
-                </Col>
+                <Col xs={12} sm={12} md={6} lg={6} style={colStyle}>
+                    <Button className="txt-uppercase abel-font" outline onClick={() => this.parseString()}>Solve Sudoku</Button>
+                </Col>                
             </Row>
             <Row style={{
                 width: '50%',

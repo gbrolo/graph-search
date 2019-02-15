@@ -1,4 +1,7 @@
-import { clone } from './OperationHelpers';
+/**
+ * State.js
+ * A State that contains problem's configuration
+ */
 
 export default class State {
     /**
@@ -19,6 +22,9 @@ export default class State {
         this.locations = locations;
     }
 
+    /**
+     * Returns State
+     */
     getState() {
         return this.locations;
     }
