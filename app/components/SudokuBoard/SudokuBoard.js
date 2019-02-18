@@ -3,7 +3,7 @@ import { Button, Fade, Row, Col, Input } from 'reactstrap';
 
 import './sudoku.css';
 import { cellValuesToPlainArray, finalNodeToStateArray } from '../../GraphSearch/OperationHelpers';
-import { setSudokuInitialState, aStar } from '../../GraphSearch/SearchHelpers';
+import { setSudokuInitialState, aStar, isSudokuSolvable } from '../../GraphSearch/SearchHelpers';
 
 import Problem from '../../GraphSearch/Problem';
 
@@ -34,6 +34,8 @@ const cell = {
     height: '100%'
 }
 
+const inputRe = /^[1-4\\.]+$/;
+
 class SudokuBoard extends Component {
   constructor(props) {
     super(props);    
@@ -48,21 +50,24 @@ class SudokuBoard extends Component {
     let plain = cellValuesToPlainArray(cellValues);
     
     let initialState = setSudokuInitialState(plain);
-    // console.log(initialState);
-    let problem = new Problem(initialState, null, 'SUDOKU'); 
-    // console.log(problem.goalTest(initialState));
-    // console.log(problem.actions(initialState));
-    // console.log(problem.result(initialState, problem.actions(initialState)[0]));
 
-    let result = aStar(problem);
-    console.log(result);
-
-    let stateArray = finalNodeToStateArray(result.node);
-    // stateArray = stateArray.filter(item => item != '*');
+    if (isSudokuSolvable(initialState.getState())) {
+        // console.log(initialState);
+        let problem = new Problem(initialState, null, 'SUDOKU'); 
+        // console.log(problem.goalTest(initialState));
+        // console.log(problem.actions(initialState));
+        // console.log(problem.result(initialState, problem.actions(initialState)[0]));
     
-    this.animateBoard(stateArray);
-
-    this.setState({ cellValues })
+        let result = aStar(problem);
+        console.log(result);
+    
+        let stateArray = finalNodeToStateArray(result.node);
+        // stateArray = stateArray.filter(item => item != '*');
+        
+        this.animateBoard(stateArray);
+    
+        this.setState({ cellValues })
+    } else alert('Sudoku is not solvable.')
   }
 
   animateBoard(stateArray) {
@@ -88,18 +93,21 @@ class SudokuBoard extends Component {
   }
 
   parseString() {
-      let array = this.state.input.split('');
-      let cellValues = [];
+    if (inputRe.test(this.state.input)) {
+        let array = this.state.input.split('');
+        let cellValues = [];
+    
+        for (var i = 0; i < 4; i ++) {
+            let row = [];
+            for (var j = 0; j < 4; j++) {
+                row.push(array.shift());
+            }
+            cellValues.push(row);
+        }      
+    
+        this.solveSudoku(cellValues);
+    } else alert('Invalid input')
 
-      for (var i = 0; i < 4; i ++) {
-          let row = [];
-          for (var j = 0; j < 4; j++) {
-              row.push(array.shift());
-          }
-          cellValues.push(row);
-      }      
-
-      this.solveSudoku(cellValues);
   }
 
   render() {      

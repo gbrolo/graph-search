@@ -9,8 +9,10 @@
 }
 
 .puzzle-cell {
-    border: 1px solid #afafaf;
-    background-color: #fbefbe;
+    border: 1px solid #563232;
+    background-color: #84240c;
+    color: #ffc18c;
+    font-size: 1.4em;
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -18,11 +20,12 @@
     justify-content: center;
     align-content: center;
     align-items: center;
+    font-family: 'Abel'
 }
 
 .puzzle-cell-empty {
-    border: 1px solid #afafaf;
-    background-color: #afafaf;
+    border: 1px solid #563232;
+    background-color: #e7cfb4;
     display: flex;
     flex-direction: column;
     width: 100%;
