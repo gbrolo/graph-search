@@ -10,8 +10,8 @@
 
 .board {
     border: 10px solid #563232;
-    height: 300px;
-    width: 300px;
+    height: 200px;
+    width: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
