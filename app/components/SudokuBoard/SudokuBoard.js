@@ -52,26 +52,19 @@ class SudokuBoard extends Component {
     let initialState = setSudokuInitialState(plain);
 
     if (isSudokuSolvable(initialState.getState())) {
-        // console.log(initialState);
         let problem = new Problem(initialState, null, 'SUDOKU'); 
-        // console.log(problem.goalTest(initialState));
-        // console.log(problem.actions(initialState));
-        // console.log(problem.result(initialState, problem.actions(initialState)[0]));
     
         let result = aStar(problem);
         console.log(result);
     
-        let stateArray = finalNodeToStateArray(result.node);
-        // stateArray = stateArray.filter(item => item != '*');
-        
+        let stateArray = finalNodeToStateArray(result.node);        
         this.animateBoard(stateArray);
     
         this.setState({ cellValues })
     } else alert('Sudoku is not solvable.')
   }
 
-  animateBoard(stateArray) {
-    //   let { stateArray } = this.state;
+  animateBoard(stateArray) {    
       stateArray = stateArray.reverse();
 
       this.stateArray = setInterval(() => {
@@ -83,13 +76,6 @@ class SudokuBoard extends Component {
             })
         }
       }, 600);
-
-    //   stateArray.forEach(configuration => {
-    //       let apply = () => this.setState({ cellValues: configuration });
-    //       console.log(configuration);
-          
-    //       setTimeout(() => apply(), 1000);
-    //   })
   }
 
   parseString() {

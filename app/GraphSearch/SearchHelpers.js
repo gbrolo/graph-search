@@ -17,21 +17,25 @@ const equal = require('deep-equal'); // for comparing objects
  */
 function childNode(problem, parent, action) {
     let state = problem.result(parent.getState(), action);
-    // let pathCost = clone(parent).getPathCost() + problem.stepCost() + getPuzzleHeuristic(clone(parent.getState())); // TODO test h(n)
-    
-    let problemType = problem.getProblemType();
-    // console.log('problemType is: ', problemType);
+    let problemType = problem.getProblemType();    
     let heuristicCost = 0;
 
     if (problemType === 'PUZZLE') {
-        heuristicCost = getPuzzleHeuristic(parent.getState());
+        // heuristicCost = getPuzzleHeuristic(parent.getState());
+        heuristicCost = getPuzzleHeuristicManhattan(parent.getState());
+        // let heuristics = [
+        //     getPuzzleHeuristic(parent.getState()),
+        //     getPuzzleHeuristicManhattan(parent.getState())
+        // ];
+
+        // heuristicCost = Math.max(...heuristics);
     } else if (problemType === 'SUDOKU') {
         heuristicCost = getSudokuHeuristic(action);
     }
     
     let pathCost = parent.getPathCost() 
                     + problem.stepCost() 
-                    + heuristicCost; // TODO test h(n)
+                    + heuristicCost;
     let node = new Node(state, parent, action, pathCost);
 
     return node;
@@ -74,15 +78,12 @@ function aStar(problem) {
         if (unorderedFrontier.length === 0) {
             return failure();
         }
-        
-        // node = clone(frontier.dequeue());        
+           
         node = unorderedFrontier.shift();
         // console.log('current state is', clone(node.getState().getState()));
-        // console.log('frontier is:', clone(unorderedFrontier));
-        // console.log('movements so far', node.getAction());
+        // console.log('frontier is:', clone(unorderedFrontier));        
 
-        if (problem.goalTest(node.getState())) {
-            // console.log('inside goaltest');
+        if (problem.goalTest(node.getState())) {            
             return solution(node);
         }
 
@@ -90,8 +91,7 @@ function aStar(problem) {
 
         explored.push(node.getState());
 
-        // console.log('about to check actions');
-        // console.log('frontier is:', frontier);
+        // console.log('about to check actions');        
         // console.log('unorderedFrontier is:', unorderedFrontier);
         // console.log('explored is:', clone(explored));
 
@@ -109,10 +109,9 @@ function aStar(problem) {
                     return a.pathCost - b.pathCost
                 })
                 
-                // console.log('child is not inside explored nor frontier');
-                // console.log('frontier is:', frontier);
+                // console.log('child is not inside explored nor frontier');                
                 // console.log('unorderedFrontier is:', unorderedFrontier);
-            } else if (childCondition.result === true) { // BAD condition
+            } else if (childCondition.result === true) { 
                 // console.log('child is inside frontier with higher pathCost')     
                 // console.log('unorderedFrontier just before splice', clone(unorderedFrontier));        
                 unorderedFrontier.splice(childCondition.frontierIndex, 1, child);
@@ -120,10 +119,7 @@ function aStar(problem) {
                     return a.pathCost - b.pathCost
                 })                
 
-                // console.log('unorderedFrontier with new node and ordered', clone(unorderedFrontier))
-
-                // console.log('frontier is:', frontier);
-                // console.log('unorderedFrontier is:', unorderedFrontier);
+                // console.log('unorderedFrontier with new node and ordered', clone(unorderedFrontier))                                
             }                                    
 
         });
@@ -204,14 +200,6 @@ function isInside(object, array) {
     return false;
 }
 
-function childHasHigherPathCost(childPathCost, unorderedFrontier) {
-    let max = Math.max.apply(Math, unorderedFrontier.map(node => {
-        return node.getPathCost()
-    }));
-
-    return max === childPathCost;
-}
-
 /**
  * Sets PUZZLE initial State
  * @param {Array} array 
@@ -258,7 +246,7 @@ function setSudokuInitialState(array) {
 }
 
 /**
- * Returns heuristic value [h(n)] for current State in PUZZLE problem
+ * Returns heuristic value [h(n)] for current State in PUZZLE problem [Misplaced Tiles Heuristic]
  * @param {State} state 
  */
 function getPuzzleHeuristic(state) {
@@ -274,6 +262,106 @@ function getPuzzleHeuristic(state) {
     })
 
     return misplaced;
+}
+
+/**
+ * Returns heuristic value [h(n)] for current State in PUZZLE problem [Manhattan + Linear Conflicts Heuristic]
+ * @param {State} state 
+ */
+function getPuzzleHeuristicManhattan(state) {
+    let locations = state.getState();
+    let manhattanSum = 0;
+
+    let actualPositions = {
+        tile_1: [1, 4],
+        tile_2: [2, 4],
+        tile_3: [3, 4],
+        tile_4: [4, 4],
+        tile_5: [1, 3],
+        tile_6: [2, 3],
+        tile_7: [3, 3],
+        tile_8: [4, 3],
+        tile_9: [1, 2],
+        tile_10: [2, 2],
+        tile_11: [3, 2],
+        tile_12: [4, 2],
+        tile_13: [1, 1],
+        tile_14: [2, 1],
+        tile_15: [3, 1],
+        tile_16: [4, 1]
+    }
+
+    let puzzleArray = [];
+
+    Object.keys(locations).forEach((key, i) => {
+        let index = parseInt(key.substr(5, key.length-1));
+        const value = locations[key] === '.' ? 16 : parseInt(locations[key]);
+
+        puzzleArray.push(value);
+
+        if (value != index) {
+            const realPosition = actualPositions[key];
+            const valueProp = 'tile_' + value;
+            const currentPosition = actualPositions[valueProp];
+
+            manhattanSum = manhattanSum + (Math.abs(realPosition[0] - currentPosition[0]) +
+                                            Math.abs(realPosition[1] - currentPosition[1]));
+        }                    
+    })
+
+    let linearConflicts = 0;
+
+    for (var i = 3; i < puzzleArray.length; i = i + 4) {
+        for (var j = i; j > i - 3; j--) {
+            if ((j + 1) % 4 === 0) {
+                let cell_1 = puzzleArray[j - 3];
+                let cell_2 = puzzleArray[j - 2];
+
+                if (cell_1 > puzzleArray[j]) { linearConflicts = linearConflicts + 1 }
+                if (cell_2 > puzzleArray[j]) { linearConflicts = linearConflicts + 1 }
+            }
+
+            if ((j % 2 === 0) || (j % 6 === 0) || (j % 10 === 0) || (j % 14 === 0)) {
+                let cell_1 = puzzleArray[j - 2];
+                if (cell_1 > puzzleArray[j]) { linearConflicts = linearConflicts + 1 }
+            }
+
+            if (puzzleArray[j - 1] > puzzleArray[j]) {
+                linearConflicts = linearConflicts + 1
+            }
+        }
+    }
+
+    let columnArrays = [
+        [puzzleArray[0], puzzleArray[4], puzzleArray[8], puzzleArray[12]],
+        [puzzleArray[1], puzzleArray[5], puzzleArray[9], puzzleArray[13]],
+        [puzzleArray[2], puzzleArray[6], puzzleArray[10], puzzleArray[14]],
+        [puzzleArray[3], puzzleArray[7], puzzleArray[11], puzzleArray[15]]
+    ]
+
+    columnArrays.forEach(column => {
+        let i = column.length - 1;
+        for (var j = i; j > i - 3; j--) {
+            if ((j + 1) % 4 === 0) {
+                let cell_1 = column[j - 3];
+                let cell_2 = column[j - 2];
+
+                if (cell_1 > column[j]) { linearConflicts = linearConflicts + 1 }
+                if (cell_2 > column[j]) { linearConflicts = linearConflicts + 1 }
+            }
+
+            if ((j % 2 === 0) || (j % 6 === 0) || (j % 10 === 0) || (j % 14 === 0)) {
+                let cell_1 = column[j - 2];
+                if (cell_1 > column[j]) { linearConflicts = linearConflicts + 1 }
+            }
+
+            if (column[j - 1] > column[j]) {
+                linearConflicts = linearConflicts + 1
+            }
+        }
+    })
+    
+    return manhattanSum + (2 * linearConflicts);
 }
 
 /**

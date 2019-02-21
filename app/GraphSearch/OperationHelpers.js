@@ -3,6 +3,10 @@
  * Functions that help in solving the problem. 
  */
 
+/**
+ * Transforms value array into plain array
+ * @param {Array} cellValues: Array with arrays of values
+ */
 function cellValuesToPlainArray(cellValues) {
     let array = [];
 
@@ -17,6 +21,10 @@ function cellValuesToPlainArray(cellValues) {
     return array;
 }
 
+/**
+ * Determines if puzzle is solvable [Inversions method]
+ * @param {Array} plainArray 
+ */
 function determinePuzzleSolvability(plainArray) {
     let numberArray = plainArray.map(element => {
         if (element === '.') {
@@ -52,10 +60,19 @@ function determinePuzzleSolvability(plainArray) {
     return realInversionsIs === inversionsShouldBe;
 }
 
+/**
+ * Get key inside object by value
+ * @param {Object} object
+ * @param {String} value 
+ */
 function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
 }
 
+/**
+ * Get set of possible actions in PUZZLE for current state [getState()]
+ * @param {Object} tileLocation 
+ */
 function getPuzzleActions(tileLocation) {
     if (tileLocation === 'tile_16') {
         return [ 'LEFT', 'UP' ]
@@ -78,6 +95,11 @@ function getPuzzleActions(tileLocation) {
     }
 }
 
+/**
+ * Get set of possible actions in SUDOKU for current state [getState()]
+ * @param {Object} tileLocation 
+ * @param {State} state 
+ */
 function getSudokuActions(tileLocation, state) {    
     let locations = state;      
     let stateToPlainArray = [];
@@ -187,6 +209,12 @@ function getSudokuActions(tileLocation, state) {
     
 }
 
+/**
+ * Get location of blank tile in PUZZLE after action
+ * @param {Object} tileLocation 
+ * @param {String} action 
+ * @param {Array} actions 
+ */
 function getNewPuzzleTileWithAction(tileLocation, action, actions) {
     let index = parseInt(tileLocation.substr(5, tileLocation.length-1));
 
@@ -205,6 +233,9 @@ function getNewPuzzleTileWithAction(tileLocation, action, actions) {
     } else return tileLocation;        
 }
 
+/**
+ * Sets goal states for PUZZLE
+ */
 function setPuzzleGoalStates() {
     let goalState1 = {
         tile_1: "1",
@@ -225,28 +256,13 @@ function setPuzzleGoalStates() {
         tile_16: "."
     };
 
-    // let goalState2 = {
-    //     tile_1: ".",
-    //     tile_2: "1",
-    //     tile_3: "2",
-    //     tile_4: "3",
-    //     tile_5: "4",
-    //     tile_6: "5",
-    //     tile_7: "6",
-    //     tile_8: "7",
-    //     tile_9: "8",
-    //     tile_10: "9",
-    //     tile_11: "10",
-    //     tile_12: "11",
-    //     tile_13: "12",
-    //     tile_14: "13",
-    //     tile_15: "14",
-    //     tile_16: "15"
-    // };
-
     return [goalState1];   
 }
 
+/**
+ * Deep clones an object [losing references]
+ * @param {Object} obj 
+ */
 function clone(obj){
     if(obj == null || typeof(obj) != 'object')
         return obj;
@@ -258,6 +274,10 @@ function clone(obj){
     return temp;
 }
 
+/**
+ * Transform Node to array of step State Nodes [for animation]
+ * @param {Node} node 
+ */
 function finalNodeToStateArray(node) {
     let traverse = true;
     let locations = [];

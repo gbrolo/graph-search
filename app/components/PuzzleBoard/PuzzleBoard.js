@@ -46,31 +46,23 @@ class PuzzleBoard extends Component {
   }
 
   solvePuzzle(cellValues) {     
-      let plain = cellValuesToPlainArray(cellValues);
-    //   console.log(plain);
+      let plain = cellValuesToPlainArray(cellValues);    
 
       if (determinePuzzleSolvability(plain)) {
           let initialState = setInitialState(cellValuesToPlainArray(cellValues));
-          //console.log('initialState', initialState);
           let problem = new Problem(initialState, setPuzzleGoalStates(), 'PUZZLE');            
-          //console.log(problem.getInitialState().getState());
           let result = aStar(problem);
           console.log(result);
 
           let stateArray = finalNodeToStateArray(result.node);
-        //   console.log(stateArray);
-          this.animateBoard(stateArray);
-        //   this.setState({ stateArray, cellValues })
-        //   console.log(problem.actions(problem.getInitialState()));
-        //   console.log(problem.result(problem.getInitialState(), 'UP'));      
+          this.animateBoard(stateArray);    
       } else {
           alert('Puzzle unsolvable!');
       }
 
   }
 
-  animateBoard(stateArray) {
-    //   let { stateArray } = this.state;
+  animateBoard(stateArray) {    
       stateArray = stateArray.reverse();
 
       this.stateArray = setInterval(() => {
@@ -82,13 +74,6 @@ class PuzzleBoard extends Component {
             })
         }
       }, 600);
-
-    //   stateArray.forEach(configuration => {
-    //       let apply = () => this.setState({ cellValues: configuration });
-    //       console.log(configuration);
-          
-    //       setTimeout(() => apply(), 1000);
-    //   })
   }
 
   parseString() {
